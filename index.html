@@ -93,21 +93,21 @@
         var label = document.getElementById('position-label');
 
         function updatePlayer() {
-            player.src = 'https://vsembed.ru/embed/tv? imdb=' + currentId + '&season=1&episode=' + currentIndex;
+            player.src = 'https://vsembed.ru/embed/tv? imdb=' + currentId + '&season=1&episode=' + currentEpIndex;
             label.textContent = "Episode: " + (currentEpIndex)
         }
 
         document.getElementById('id-input').addEventListener('input', function () {
-            player.src = 'https://www.youtube.com/embed/' + this.value.trim();
+            currentId = this.value.trim();
         });
 
         document.getElementById('next-btn').addEventListener('click', function () {
-            currentIndex = (currentEpIndex + 1)
+            currentEpIndex = (currentEpIndex + 1)
             updatePlayer();
         });
 
         document.getElementById('prev-btn').addEventListener('click', function () {
-            currentIndex = (currentEpIndex - 1)
+            currentEpIndex = (currentEpIndex - 1)
             updatePlayer();
         });
     </script>
