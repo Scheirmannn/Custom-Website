@@ -103,11 +103,35 @@
                 episodes = [];
                 currentIndex = 0;
 
+                // 1. Lookup show
                 const res1 = await fetch(`https://api.tvmaze.com/lookup/shows?imdb=${imdbId}`);
+
+                if (!res1.ok) {
+                    alert("Show not found (invalid IMDb ID)");
+                    return;
+                }
+
                 const show = await res1.json();
 
+                if (!show || !show.id) {
+                    alert("Show not found");
+                    return;
+                }
+
+                // 2. Get episodes
                 const res2 = await fetch(`https://api.tvmaze.com/shows/${show.id}/episodes`);
+
+                if (!res2.ok) {
+                    alert("Failed to load episodes");
+                    return;
+                }
+
                 const data = await res2.json();
+
+                if (!Array.isArray(data)) {
+                    alert("Episode data error");
+                    return;
+                }
 
                 episodes = data.map(ep => ({
                     season: ep.season,
@@ -123,8 +147,8 @@
                 updatePlayer();
 
             } catch (err) {
-                console.error(err);
-                alert("Failed to load show");
+                console.error("ERROR:", err);
+                alert("Network or API error");
             }
         }
 
