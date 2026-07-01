@@ -70,13 +70,13 @@
     <div class="controls">
         <div class="ssControls"></div>
         <button id="prevSs-btn" type="button">&larr; Prev</button>
-        <span id="position-label" style="font-size: 14px; align-self: center;">Season: 1</span>
+        <span id="Season-label" style="font-size: 14px; align-self: center;">Season: 1</span>
         <button id="nextSs-btn" type="button">Next &rarr;</button>
     </div>
 
     <div class="epControls"></div>
     <button id="prevEp-btn" type="button">&larr; Prev</button>
-    <span id="position-label" style="font-size: 14px; align-self: center;">Episode: 1</span>
+    <span id="Episode-label" style="font-size: 14px; align-self: center;">Episode: 1</span>
     <button id="nextEp-btn" type="button">Next &rarr;</button>
     </div>
 
@@ -100,11 +100,11 @@
         var currentId = "tt0491738"
 
         var player = document.getElementById('player');
-        var label = document.getElementById('position-label');
+        var episodeLabel = document.getElementById('Episode-label');
 
         function updatePlayer() {
             player.src = 'https://vsembed.ru/embed/tv? imdb=' + currentId + '&season=1&episode=' + currentEpIndex;
-            label.textContent = "Episode: " + (currentEpIndex)
+            episodeLabel.textContent = "Episode: " + (currentEpIndex)
         }
 
         document.getElementById('id-input').addEventListener('input', function () {
