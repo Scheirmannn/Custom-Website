@@ -40,8 +40,6 @@
 
         .player-wrap {
             position: relative;
-            width: 120%;
-            height: 120%;
             padding-top: 56.25%;
             /* 16:9 aspect ratio */
             background: #f2f2f2;
@@ -98,14 +96,16 @@
 
     <script>
         var currentEpIndex = 1;
+        var currentSsIndex = 1;
         var currentId = "tt0491738"
 
         var player = document.getElementById('player');
         var episodeLabel = document.getElementById('Episode-label');
 
         function updatePlayer() {
-            player.src = 'https://vsembed.ru/embed/tv? imdb=' + currentId + '&season=1&episode=' + currentEpIndex;
+            player.src = `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${currentSsIndex}&episode=${currentEpIndex}`;
             episodeLabel.textContent = "Episode: " + (currentEpIndex)
+            seasonLabel.textContent = "Season: " + (currentSsIndex);
         }
 
         document.getElementById('id-input').addEventListener('input', function () {
@@ -120,6 +120,16 @@
 
         document.getElementById('prevEp-btn').addEventListener('click', function () {
             currentEpIndex = (currentEpIndex - 1)
+            updatePlayer();
+        });
+
+        document.getElementById('nextSs-btn').addEventListener('click', function () {
+            currentSsIndex = (currentSsIndex + 1)
+            updatePlayer();
+        });
+
+        document.getElementById('prevSs-btn').addEventListener('click', function () {
+            currentSsIndex = (currentSsIndex - 1)
             updatePlayer();
         });
     </script>
