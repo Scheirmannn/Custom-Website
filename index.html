@@ -71,170 +71,108 @@
         let currentId = localStorage.getItem("currentId") || "tt0491738";
 
         let episodes = [];
-        let currentIndex = 0;
+        let index = 0;
 
         const player = document.getElementById("player");
-        const episodeLabel = document.getElementById("Episode-label");
-        const seasonLabel = document.getElementById("Season-label");
-        const idInput = document.getElementById("id-input");
+        const epLabel = document.getElementById("Episode-label");
+        const ssLabel = document.getElementById("Season-label");
+        const input = document.getElementById("id-input");
 
-        idInput.value = currentId;
+        input.value = currentId;
 
         // --------------------
-        // STORAGE
+        // SAVE / LOAD (SAFE)
         // --------------------
-        function saveProgress() {
-            let progress = JSON.parse(localStorage.getItem("progress")) || {};
-            progress[currentId] = currentIndex;
-            localStorage.setItem("progress", JSON.stringify(progress));
+        function save() {
+            const data = JSON.parse(localStorage.getItem("progress") || "{}");
+            data[currentId] = index;
+            localStorage.setItem("progress", JSON.stringify(data));
             localStorage.setItem("currentId", currentId);
         }
 
-        function loadProgress(id) {
-            let progress = JSON.parse(localStorage.getItem("progress")) || {};
-            currentIndex = progress[id] || 0;
+        function load(id) {
+            const data = JSON.parse(localStorage.getItem("progress") || "{}");
+            index = data[id] || 0;
         }
 
         // --------------------
-        // TVMAZE LOAD
+        // LOAD SHOW (SAFE)
         // --------------------
-        async function loadShow(imdbId) {
+        async function loadShow(imdb) {
             try {
                 episodes = [];
-                currentIndex = 0;
+                index = 0;
 
-                // 1. Lookup show
-                const res1 = await fetch(`https://api.tvmaze.com/lookup/shows?imdb=${imdbId}`);
+                const res = await fetch(`https://api.tvmaze.com/lookup/shows?imdb=${imdb}`);
+                if (!res.ok) throw new Error("Show not found");
 
-                if (!res1.ok) {
-                    alert("Show not found (invalid IMDb ID)");
-                    return;
-                }
+                const show = await res.json();
 
-                const show = await res1.json();
-
-                if (!show || !show.id) {
-                    alert("Show not found");
-                    return;
-                }
-
-                // 2. Get episodes
                 const res2 = await fetch(`https://api.tvmaze.com/shows/${show.id}/episodes`);
-
-                if (!res2.ok) {
-                    alert("Failed to load episodes");
-                    return;
-                }
+                if (!res2.ok) throw new Error("Episodes failed");
 
                 const data = await res2.json();
 
-                if (!Array.isArray(data)) {
-                    alert("Episode data error");
-                    return;
-                }
-
-                episodes = data.map(ep => ({
-                    season: ep.season,
-                    episode: ep.number
+                episodes = data.map(e => ({
+                    season: e.season,
+                    episode: e.number
                 }));
 
-                loadProgress(imdbId);
+                load(imdb);
 
-                if (currentIndex >= episodes.length) {
-                    currentIndex = 0;
-                }
+                if (index >= episodes.length) index = 0;
 
-                updatePlayer();
+                update();
 
             } catch (err) {
-                console.error("ERROR:", err);
-                alert("Network or API error");
+                console.error(err);
+                alert("Could not load show. Check IMDb ID.");
             }
         }
 
         // --------------------
-        // PLAYER UPDATE
+        // UPDATE PLAYER
         // --------------------
-        function updatePlayer() {
+        function update() {
             if (!episodes.length) return;
 
-            const ep = episodes[currentIndex];
+            const ep = episodes[index];
 
             player.src =
                 `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${ep.season}&episode=${ep.episode}`;
 
-            episodeLabel.textContent = `Episode: ${ep.episode}`;
-            seasonLabel.textContent = `Season: ${ep.season}`;
+            epLabel.textContent = `Episode: ${ep.episode}`;
+            ssLabel.textContent = `Season: ${ep.season}`;
 
-            saveProgress();
+            save();
         }
 
         // --------------------
-        // BUTTONS (FIXED SAFE LOGIC)
+        // BUTTONS
         // --------------------
         document.getElementById("nextEp-btn").onclick = () => {
-            if (!episodes.length) return;
-
-            if (currentIndex < episodes.length - 1) {
-                currentIndex++;
-                updatePlayer();
+            if (index < episodes.length - 1) {
+                index++;
+                update();
             }
         };
 
         document.getElementById("prevEp-btn").onclick = () => {
-            if (!episodes.length) return;
-
-            if (currentIndex > 0) {
-                currentIndex--;
-                updatePlayer();
-            }
-        };
-
-        // Season jump (simple + safe)
-        document.getElementById("nextSs-btn").onclick = () => {
-            if (!episodes.length) return;
-
-            const currentSeason = episodes[currentIndex].season;
-
-            const next = episodes.findIndex((e, i) =>
-                i > currentIndex && e.season > currentSeason
-            );
-
-            if (next !== -1) {
-                currentIndex = next;
-                updatePlayer();
-            }
-        };
-
-        document.getElementById("prevSs-btn").onclick = () => {
-            if (!episodes.length) return;
-
-            const currentSeason = episodes[currentIndex].season;
-
-            let prev = -1;
-
-            for (let i = currentIndex - 1; i >= 0; i--) {
-                if (episodes[i].season < currentSeason) {
-                    prev = i;
-                    break;
-                }
-            }
-
-            if (prev !== -1) {
-                currentIndex = prev;
-                updatePlayer();
+            if (index > 0) {
+                index--;
+                update();
             }
         };
 
         // --------------------
-        // ENTER KEY LOAD SHOW
+        // ENTER KEY
         // --------------------
-        idInput.addEventListener("keydown", (e) => {
+        input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                const id = idInput.value.trim();
-                if (!id) return;
+                const val = input.value.trim();
+                if (!val) return;
 
-                currentId = id;
+                currentId = val;
                 loadShow(currentId);
             }
         });
