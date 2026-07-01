@@ -82,7 +82,7 @@
 
 
         <input type="text" id="id-input" placeholder="Enter a Show ID"
-            style="width: 35%; padding: 10px; margin-bottom: 0px;">
+            style="width: 35%; padding: 0px; margin-bottom: 0px;">
 
     </div>
 
@@ -95,52 +95,90 @@
     </div>
 
     <script>
-        let currentEpIndex = Number(localStorage.getItem("currentEpisode")) || 1;
-        let currentSsIndex = Number(localStorage.getItem("currentSeason")) || 1;
         let currentId = localStorage.getItem("currentId") || "tt0491738";
+        let currentSsIndex = 1;
+        let currentEpIndex = 1;
 
-        var player = document.getElementById('player');
-        var episodeLabel = document.getElementById('Episode-label');
-        var seasonLabel = document.getElementById('Season-label');
+        const player = document.getElementById('player');
+        const episodeLabel = document.getElementById('Episode-label');
+        const seasonLabel = document.getElementById('Season-label');
+        const idInput = document.getElementById('id-input');
 
-        document.getElementById("id-input").value = currentId;
+        idInput.value = currentId;
+
+        function saveProgress() {
+            let progress = JSON.parse(localStorage.getItem("progress")) || {};
+
+            progress[currentId] = {
+                season: currentSsIndex,
+                episode: currentEpIndex
+            };
+
+            localStorage.setItem("progress", JSON.stringify(progress));
+            localStorage.setItem("currentId", currentId);
+        }
+
+        function loadProgress(id) {
+            let progress = JSON.parse(localStorage.getItem("progress")) || {};
+
+            if (progress[id]) {
+                currentSsIndex = progress[id].season;
+                currentEpIndex = progress[id].episode;
+            } else {
+                currentSsIndex = 1;
+                currentEpIndex = 1;
+            }
+        }
 
         function updatePlayer() {
             player.src = `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${currentSsIndex}&episode=${currentEpIndex}`;
-            episodeLabel.textContent = "Episode: " + (currentEpIndex)
-            seasonLabel.textContent = "Season: " + (currentSsIndex);
 
-            localStorage.setItem("currentId", currentId);
-            localStorage.setItem("currentSeason", currentSsIndex);
-            localStorage.setItem("currentEpisode", currentEpIndex);
+            episodeLabel.textContent = `Episode: ${currentEpIndex}`;
+            seasonLabel.textContent = `Season: ${currentSsIndex}`;
+
+            saveProgress();
         }
 
-        document.getElementById('id-input').addEventListener('input', function () {
-            currentId = this.value.trim();
-            updatePlayer();
+
+        loadProgress(currentId);
+        updatePlayer();
+
+
+        idInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                const id = this.value.trim();
+
+                if (id !== "") {
+                    currentId = id;
+                    loadProgress(currentId);
+                    updatePlayer();
+                }
+            }
         });
 
         document.getElementById('nextEp-btn').addEventListener('click', function () {
-            currentEpIndex = (currentEpIndex + 1)
+            currentEpIndex++;
             updatePlayer();
         });
 
         document.getElementById('prevEp-btn').addEventListener('click', function () {
-            currentEpIndex = (currentEpIndex - 1)
-            updatePlayer();
+            if (currentEpIndex > 1) {
+                currentEpIndex--;
+                updatePlayer();
+            }
         });
 
         document.getElementById('nextSs-btn').addEventListener('click', function () {
-            currentSsIndex = (currentSsIndex + 1)
+            currentSsIndex++;
             updatePlayer();
         });
 
         document.getElementById('prevSs-btn').addEventListener('click', function () {
-            currentSsIndex = (currentSsIndex - 1)
-            updatePlayer();
+            if (currentSsIndex > 1) {
+                currentSsIndex--;
+                updatePlayer();
+            }
         });
-
-        updatePlayer();
     </script>
 
 </body>
