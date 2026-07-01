@@ -71,6 +71,11 @@
         <button id="prev-btn" type="button">&larr; Prev</button>
         <span id="position-label" style="font-size: 14px; align-self: center;">Episode: 1</span>
         <button id="next-btn" type="button">Next &rarr;</button>
+
+        <input type="text" id="id-input" placeholder="Enter a Show ID"
+            style="width: 100%; padding: 8px; margin-bottom: 12px;">
+        <button id="load-btn" type="button">Load</button>
+
     </div>
 
     <div class="player-wrap">
@@ -89,8 +94,12 @@
 
         function updatePlayer() {
             player.src = 'https://vsembed.ru/embed/tv?imdb=tt0491738&season=5&episode=' + currentIndex;
-            label.textContent = "Episode: " + (currentIndex + 1)
+            label.textContent = "Episode: " + (currentIndex)
         }
+
+        document.getElementById('id-input').addEventListener('input', function () {
+            player.src = 'https://www.youtube.com/embed/' + this.value.trim();
+        });
 
         document.getElementById('next-btn').addEventListener('click', function () {
             currentIndex = (currentIndex + 1)
