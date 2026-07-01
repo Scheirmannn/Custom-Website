@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Website</title>
-
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -16,6 +15,12 @@
             background: #ffffff;
         }
 
+        h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
         .controls {
             display: flex;
             gap: 12px;
@@ -23,9 +28,20 @@
             flex-wrap: wrap;
         }
 
+        select {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #fff;
+        }
+
         .player-wrap {
             position: relative;
             padding-top: 56.25%;
+            /* 16:9 aspect ratio */
             background: #f2f2f2;
             border-radius: 8px;
             overflow: hidden;
@@ -40,9 +56,10 @@
             border: 0;
         }
 
-        input {
-            width: 35%;
-            padding: 6px;
+        p.note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
         }
     </style>
 </head>
@@ -51,131 +68,117 @@
 
     <div class="controls">
 
-        <button id="prevSs-btn">← Prev Season</button>
-        <span id="Season-label">Season: 1</span>
-        <button id="nextSs-btn">Next Season →</button>
+        <button id="prevSs-btn" type="button">&larr; Prev</button>
+        <span id="Season-label" style="font-size: 14px; align-self: center;">Season: 1</span>
+        <button id="nextSs-btn" type="button">Next &rarr;</button>
 
-        <button id="prevEp-btn">← Prev Ep</button>
-        <span id="Episode-label">Episode: 1</span>
-        <button id="nextEp-btn">Next Ep →</button>
 
-        <input id="id-input" placeholder="Enter IMDb ID">
+
+        <button id="prevEp-btn" type="button">&larr; Prev</button>
+        <span id="Episode-label" style="font-size: 14px; align-self: center;">Episode: 1</span>
+        <button id="nextEp-btn" type="button">Next &rarr;</button>
+
+
+
+
+        <input type="text" id="id-input" placeholder="Enter a Show ID"
+            style="width: 35%; padding: 0px; margin-bottom: 0px;">
+
     </div>
 
     <div class="player-wrap">
-        <iframe id="player" src="https://vsembed.ru/embed/tv?imdb=tt0491738&season=1&episode=1" allowfullscreen>
+        <iframe id="player" src="https://vsembed.ru/embed/tv?imdb=tt0491738&season=1&episode=1"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
         </iframe>
     </div>
 
     <script>
         let currentId = localStorage.getItem("currentId") || "tt0491738";
+        let currentSsIndex = 1;
+        let currentEpIndex = 1;
 
-        let episodes = [];
-        let index = 0;
+        const player = document.getElementById('player');
+        const episodeLabel = document.getElementById('Episode-label');
+        const seasonLabel = document.getElementById('Season-label');
+        const idInput = document.getElementById('id-input');
 
-        const player = document.getElementById("player");
-        const epLabel = document.getElementById("Episode-label");
-        const ssLabel = document.getElementById("Season-label");
-        const input = document.getElementById("id-input");
+        idInput.value = currentId;
 
-        input.value = currentId;
+        function saveProgress() {
+            let progress = JSON.parse(localStorage.getItem("progress")) || {};
 
-        // --------------------
-        // SAVE / LOAD (SAFE)
-        // --------------------
-        function save() {
-            const data = JSON.parse(localStorage.getItem("progress") || "{}");
-            data[currentId] = index;
-            localStorage.setItem("progress", JSON.stringify(data));
+            progress[currentId] = {
+                season: currentSsIndex,
+                episode: currentEpIndex
+            };
+
+            localStorage.setItem("progress", JSON.stringify(progress));
             localStorage.setItem("currentId", currentId);
         }
 
-        function load(id) {
-            const data = JSON.parse(localStorage.getItem("progress") || "{}");
-            index = data[id] || 0;
-        }
+        function loadProgress(id) {
+            let progress = JSON.parse(localStorage.getItem("progress")) || {};
 
-        function update() {
-            if (!episodes.length) return;
-            const ep = episodes[index];
-            player.src =
-                `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${ep.season}&episode=${ep.episode}`;
-            epLabel.textContent = `Episode: ${ep.episode}`;
-            ssLabel.textContent = `Season: ${ep.season}`;
-
-            save();
-        }
-
-        // --------------------
-        // LOAD SHOW (SAFE)
-        // --------------------
-        async function loadShow(imdb) {
-            try {
-                episodes = [];
-                index = 0;
-
-                const res = await fetch(`https://api.tvmaze.com/lookup/shows?imdb=${imdb}`);
-                if (!res.ok) throw new Error("Show not found");
-
-                const show = await res.json();
-
-                const res2 = await fetch(`https://api.tvmaze.com/shows/${show.id}/episodes`);
-                if (!res2.ok) throw new Error("Episodes failed");
-
-                const data = await res2.json();
-
-                episodes = data.map(e => ({
-                    season: e.season,
-                    episode: e.number
-                }));
-
-                load(imdb);
-
-                if (index >= episodes.length) index = 0;
-
-                update();
-
-            } catch (err) {
-                console.error(err);
-                alert("Could not load show. Check IMDb ID.");
+            if (progress[id]) {
+                currentSsIndex = progress[id].season;
+                currentEpIndex = progress[id].episode;
+            } else {
+                currentSsIndex = 1;
+                currentEpIndex = 1;
             }
         }
 
+        function updatePlayer() {
+            player.src = `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${currentSsIndex}&episode=${currentEpIndex}`;
 
-        // --------------------
-        // BUTTONS
-        // --------------------
-        document.getElementById("nextEp-btn").onclick = () => {
-            if (index < episodes.length - 1) {
-                index++;
-                update();
-            }
-        };
+            episodeLabel.textContent = `Episode: ${currentEpIndex}`;
+            seasonLabel.textContent = `Season: ${currentSsIndex}`;
 
-        document.getElementById("prevEp-btn").onclick = () => {
-            if (index > 0) {
-                index--;
-                update();
-            }
-        };
+            saveProgress();
+        }
 
-        // --------------------
-        // ENTER KEY
-        // --------------------
-        input.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                const val = input.value.trim();
-                if (!val) return;
 
-                currentId = val;
-                loadShow(currentId);
+        loadProgress(currentId);
+        updatePlayer();
+
+
+        idInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                const id = this.value.trim();
+
+                if (id !== "") {
+                    currentId = id;
+                    loadProgress(currentId);
+                    updatePlayer();
+                }
             }
         });
 
-        // --------------------
-        // INIT
-        // --------------------
-        loadShow(currentId);
+        document.getElementById('nextEp-btn').addEventListener('click', function () {
+            currentEpIndex++;
+            updatePlayer();
+        });
+
+        document.getElementById('prevEp-btn').addEventListener('click', function () {
+            if (currentEpIndex > 1) {
+                currentEpIndex--;
+                updatePlayer();
+            }
+        });
+
+        document.getElementById('nextSs-btn').addEventListener('click', function () {
+            currentSsIndex++;
+            updatePlayer();
+        });
+
+        document.getElementById('prevSs-btn').addEventListener('click', function () {
+            if (currentSsIndex > 1) {
+                currentSsIndex--;
+                updatePlayer();
+            }
+        });
     </script>
 
 </body>
