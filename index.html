@@ -96,10 +96,13 @@
         }
 
         // --------------------
-        // LOAD SHOW (TVMAZE)
+        // TVMAZE LOAD
         // --------------------
         async function loadShow(imdbId) {
             try {
+                episodes = [];
+                currentIndex = 0;
+
                 const res1 = await fetch(`https://api.tvmaze.com/lookup/shows?imdb=${imdbId}`);
                 const show = await res1.json();
 
@@ -112,16 +115,21 @@
                 }));
 
                 loadProgress(imdbId);
+
+                if (currentIndex >= episodes.length) {
+                    currentIndex = 0;
+                }
+
                 updatePlayer();
 
             } catch (err) {
                 console.error(err);
-                alert("Show not found or failed to load");
+                alert("Failed to load show");
             }
         }
 
         // --------------------
-        // UPDATE PLAYER
+        // PLAYER UPDATE
         // --------------------
         function updatePlayer() {
             if (!episodes.length) return;
@@ -138,9 +146,11 @@
         }
 
         // --------------------
-        // CONTROLS
+        // BUTTONS (FIXED SAFE LOGIC)
         // --------------------
         document.getElementById("nextEp-btn").onclick = () => {
+            if (!episodes.length) return;
+
             if (currentIndex < episodes.length - 1) {
                 currentIndex++;
                 updatePlayer();
@@ -148,43 +158,59 @@
         };
 
         document.getElementById("prevEp-btn").onclick = () => {
+            if (!episodes.length) return;
+
             if (currentIndex > 0) {
                 currentIndex--;
                 updatePlayer();
             }
         };
 
+        // Season jump (simple + safe)
         document.getElementById("nextSs-btn").onclick = () => {
-            const nextSeasonIndex = episodes.findIndex((e, i) =>
-                i > currentIndex && e.season > episodes[currentIndex].season
+            if (!episodes.length) return;
+
+            const currentSeason = episodes[currentIndex].season;
+
+            const next = episodes.findIndex((e, i) =>
+                i > currentIndex && e.season > currentSeason
             );
-            if (nextSeasonIndex !== -1) {
-                currentIndex = nextSeasonIndex;
+
+            if (next !== -1) {
+                currentIndex = next;
                 updatePlayer();
             }
         };
 
         document.getElementById("prevSs-btn").onclick = () => {
-            const prevSeasonIndex = [...episodes]
-                .reverse()
-                .findIndex((e, i) =>
-                    (episodes.length - 1 - i) < currentIndex &&
-                    e.season < episodes[currentIndex].season
-                );
+            if (!episodes.length) return;
 
-            if (prevSeasonIndex !== -1) {
-                currentIndex = episodes.length - 1 - prevSeasonIndex;
+            const currentSeason = episodes[currentIndex].season;
+
+            let prev = -1;
+
+            for (let i = currentIndex - 1; i >= 0; i--) {
+                if (episodes[i].season < currentSeason) {
+                    prev = i;
+                    break;
+                }
+            }
+
+            if (prev !== -1) {
+                currentIndex = prev;
                 updatePlayer();
             }
         };
 
         // --------------------
-        // ENTER TO LOAD SHOW
+        // ENTER KEY LOAD SHOW
         // --------------------
         idInput.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                currentId = idInput.value.trim();
-                localStorage.setItem("currentId", currentId);
+                const id = idInput.value.trim();
+                if (!id) return;
+
+                currentId = id;
                 loadShow(currentId);
             }
         });
@@ -193,7 +219,6 @@
         // INIT
         // --------------------
         loadShow(currentId);
-
     </script>
 
 </body>
