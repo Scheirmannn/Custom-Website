@@ -95,6 +95,17 @@
             index = data[id] || 0;
         }
 
+        function update() {
+            if (!episodes.length) return;
+            const ep = episodes[index];
+            player.src =
+                `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${ep.season}&episode=${ep.episode}`;
+            epLabel.textContent = `Episode: ${ep.episode}`;
+            ssLabel.textContent = `Season: ${ep.season}`;
+
+            save();
+        }
+
         // --------------------
         // LOAD SHOW (SAFE)
         // --------------------
@@ -130,22 +141,6 @@
             }
         }
 
-        // --------------------
-        // UPDATE PLAYER
-        // --------------------
-        function update() {
-            if (!episodes.length) return;
-
-            const ep = episodes[index];
-
-            player.src =
-                `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${ep.season}&episode=${ep.episode}`;
-
-            epLabel.textContent = `Episode: ${ep.episode}`;
-            ssLabel.textContent = `Season: ${ep.season}`;
-
-            save();
-        }
 
         // --------------------
         // BUTTONS
