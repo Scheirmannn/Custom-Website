@@ -74,12 +74,11 @@
 
         <input type="text" id="id-input" placeholder="Enter a Show ID"
             style="width: 50%; padding: 10px; margin-bottom: 0px;">
-        <button id="load-btn" type="button">Load</button>
 
     </div>
 
     <div class="player-wrap">
-        <iframe id="player" src="https://vsembed.ru/embed/tv?imdb=tt0491738&season=5&episode=1"
+        <iframe id="player" src="https://vsembed.ru/embed/tv?imdb=tt0491738&season=1&episode=1"
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
@@ -87,14 +86,15 @@
     </div>
 
     <script>
-        var currentIndex = 1;
+        var currentEpIndex = 1;
+        var currentId = "tt0491738"
 
         var player = document.getElementById('player');
         var label = document.getElementById('position-label');
 
         function updatePlayer() {
-            player.src = 'https://vsembed.ru/embed/tv?imdb=tt0491738&season=5&episode=' + currentIndex;
-            label.textContent = "Episode: " + (currentIndex)
+            player.src = 'https://vsembed.ru/embed/tv? imdb=' + currentId + '&season=1&episode=' + currentIndex;
+            label.textContent = "Episode: " + (currentEpIndex)
         }
 
         document.getElementById('id-input').addEventListener('input', function () {
@@ -102,12 +102,12 @@
         });
 
         document.getElementById('next-btn').addEventListener('click', function () {
-            currentIndex = (currentIndex + 1)
+            currentIndex = (currentEpIndex + 1)
             updatePlayer();
         });
 
         document.getElementById('prev-btn').addEventListener('click', function () {
-            currentIndex = (currentIndex - 1)
+            currentIndex = (currentEpIndex - 1)
             updatePlayer();
         });
     </script>
