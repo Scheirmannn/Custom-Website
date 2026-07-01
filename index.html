@@ -96,89 +96,115 @@
 
     <script>
         let currentId = localStorage.getItem("currentId") || "tt0491738";
-        let currentSsIndex = 1;
-        let currentEpIndex = 1;
 
-        const player = document.getElementById('player');
-        const episodeLabel = document.getElementById('Episode-label');
-        const seasonLabel = document.getElementById('Season-label');
-        const idInput = document.getElementById('id-input');
+        let episodes = [];
+        let currentIndex = 0;
+
+        const player = document.getElementById("player");
+        const episodeLabel = document.getElementById("Episode-label");
+        const seasonLabel = document.getElementById("Season-label");
+        const idInput = document.getElementById("id-input");
 
         idInput.value = currentId;
 
+        // --------------------
+        // SAVE / LOAD PROGRESS
+        // --------------------
         function saveProgress() {
             let progress = JSON.parse(localStorage.getItem("progress")) || {};
-
-            progress[currentId] = {
-                season: currentSsIndex,
-                episode: currentEpIndex
-            };
-
+            progress[currentId] = currentIndex;
             localStorage.setItem("progress", JSON.stringify(progress));
-            localStorage.setItem("currentId", currentId);
         }
 
         function loadProgress(id) {
             let progress = JSON.parse(localStorage.getItem("progress")) || {};
+            currentIndex = progress[id] || 0;
+        }
 
-            if (progress[id]) {
-                currentSsIndex = progress[id].season;
-                currentEpIndex = progress[id].episode;
-            } else {
-                currentSsIndex = 1;
-                currentEpIndex = 1;
+        // --------------------
+        // LOAD SHOW FROM TVMAZE
+        // --------------------
+        async function loadShow(imdbId) {
+
+            try {
+                // 1. Find show
+                const res1 = await fetch(`https://api.tvmaze.com/lookup/shows?imdb=${imdbId}`);
+                const show = await res1.json();
+
+                if (!show || !show.id) {
+                    alert("Show not found");
+                    return;
+                }
+
+                // 2. Get episodes
+                const res2 = await fetch(`https://api.tvmaze.com/shows/${show.id}/episodes`);
+                const data = await res2.json();
+
+                episodes = data.map(ep => ({
+                    season: ep.season,
+                    episode: ep.number
+                }));
+
+                loadProgress(imdbId);
+                updatePlayer();
+
+            } catch (err) {
+                alert("Error loading show");
+                console.error(err);
             }
         }
 
+        // --------------------
+        // UPDATE PLAYER
+        // --------------------
         function updatePlayer() {
-            player.src = `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${currentSsIndex}&episode=${currentEpIndex}`;
 
-            episodeLabel.textContent = `Episode: ${currentEpIndex}`;
-            seasonLabel.textContent = `Season: ${currentSsIndex}`;
+            if (!episodes.length) return;
+
+            const ep = episodes[currentIndex];
+
+            player.src =
+                `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${ep.season}&episode=${ep.episode}`;
+
+            episodeLabel.textContent = `Episode: ${ep.episode}`;
+            seasonLabel.textContent = `Season: ${ep.season}`;
 
             saveProgress();
         }
 
+        // --------------------
+        // CONTROLS
+        // --------------------
+        document.getElementById("nextEp-btn").addEventListener("click", () => {
+            if (currentIndex < episodes.length - 1) {
+                currentIndex++;
+                updatePlayer();
+            }
+        });
 
-        loadProgress(currentId);
-        updatePlayer();
+        document.getElementById("prevEp-btn").addEventListener("click", () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updatePlayer();
+            }
+        });
 
-
-        idInput.addEventListener("keydown", function (event) {
+        // --------------------
+        // ENTER TO LOAD SHOW
+        // --------------------
+        idInput.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
-                const id = this.value.trim();
+                currentId = idInput.value.trim();
+                localStorage.setItem("currentId", currentId);
 
-                if (id !== "") {
-                    currentId = id;
-                    loadProgress(currentId);
-                    updatePlayer();
-                }
+                loadShow(currentId);
             }
         });
 
-        document.getElementById('nextEp-btn').addEventListener('click', function () {
-            currentEpIndex++;
-            updatePlayer();
-        });
-
-        document.getElementById('prevEp-btn').addEventListener('click', function () {
-            if (currentEpIndex > 1) {
-                currentEpIndex--;
-                updatePlayer();
-            }
-        });
-
-        document.getElementById('nextSs-btn').addEventListener('click', function () {
-            currentSsIndex++;
-            updatePlayer();
-        });
-
-        document.getElementById('prevSs-btn').addEventListener('click', function () {
-            if (currentSsIndex > 1) {
-                currentSsIndex--;
-                updatePlayer();
-            }
-        });
+        // --------------------
+        // INIT
+        // --------------------
+        loadShow(currentId);
     </script>
 
 </body>
