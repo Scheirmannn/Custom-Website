@@ -67,11 +67,9 @@
 
 <body>
 
-    <h1>Video cycler</h1>
-
     <div class="controls">
         <button id="prev-btn" type="button">&larr; Prev</button>
-        <span id="position-label" style="font-size: 14px; align-self: center;">1</span>
+        <span id="position-label" style="font-size: 14px; align-self: center;">Episode: 1</span>
         <button id="next-btn" type="button">Next &rarr;</button>
     </div>
 
@@ -83,18 +81,15 @@
         </iframe>
     </div>
 
-    <p class="note">Click Prev / Next to step through the list. Edit the <code>videoIds</code> array in the script to
-        change what's in rotation.</p>
-
     <script>
-        var currentIndex = 0;
+        var currentIndex = 1;
 
         var player = document.getElementById('player');
         var label = document.getElementById('position-label');
 
         function updatePlayer() {
             player.src = 'https://vsembed.ru/embed/tv?imdb=tt0491738&season=5&episode=' + currentIndex;
-            label.textContent = (currentIndex + 1)
+            label.textContent = "Episode: "(currentIndex + 1)
         }
 
         document.getElementById('next-btn').addEventListener('click', function () {
