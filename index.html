@@ -95,17 +95,24 @@
     </div>
 
     <script>
-        var currentEpIndex = 1;
-        var currentSsIndex = 1;
-        var currentId = "tt0491738"
+        let currentEpIndex = Number(localStorage.getItem("currentEpisode")) || 1;
+        let currentSsIndex = Number(localStorage.getItem("currentSeason")) || 1;
+        let currentId = localStorage.getItem("currentId") || "tt0491738";
 
         var player = document.getElementById('player');
         var episodeLabel = document.getElementById('Episode-label');
+        var seasonLabel = document.getElementById('Season-label');
+
+        document.getElementById("id-input").value = currentId;
 
         function updatePlayer() {
             player.src = `https://vsembed.ru/embed/tv?imdb=${currentId}&season=${currentSsIndex}&episode=${currentEpIndex}`;
             episodeLabel.textContent = "Episode: " + (currentEpIndex)
             seasonLabel.textContent = "Season: " + (currentSsIndex);
+
+            localStorage.setItem("currentId", currentId);
+            localStorage.setItem("currentSeason", currentSsIndex);
+            localStorage.setItem("currentEpisode", currentEpIndex);
         }
 
         document.getElementById('id-input').addEventListener('input', function () {
