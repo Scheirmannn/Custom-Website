@@ -169,13 +169,15 @@
         });
 
         document.getElementById('nextSs-btn').addEventListener('click', function () {
-            currentSsIndex++;
+            currentSsIndex++
+            currentEpIndex = 1;
             updatePlayer();
         });
 
         document.getElementById('prevSs-btn').addEventListener('click', function () {
             if (currentSsIndex > 1) {
                 currentSsIndex--;
+                currentEpIndex = 1;
                 updatePlayer();
             }
         });
