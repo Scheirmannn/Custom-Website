@@ -225,18 +225,16 @@
             saveProgress();
         }
 
-
         loadProgress(currentId);
         updatePlayer();
 
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const val = input.value.trim();
+                if (!val) return;
 
-        document.getElementById('id-input').addEventListener('input', function () {
-            const id = this.value.trim();
-
-            if (id !== "") {
-                currentId = id;
-                loadProgress(currentId);
-                updatePlayer();
+                currentId = val;
+                loadShow(currentId);
             }
         });
 
