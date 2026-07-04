@@ -89,6 +89,24 @@
                 width: 100%;
             }
         }
+
+        #savedShows {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .saved-show {
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .saved-show:hover {
+            background: #ddd;
+        }
     </style>
 </head>
 
@@ -121,6 +139,11 @@
                 </div>
             </div>
 
+            <div class="card">
+                <h3>Saved Shows</h3>
+                <div id="savedShows"></div>
+            </div>
+
         </div>
 
         <div class="player-wrap">
@@ -139,8 +162,34 @@
         const episodeLabel = document.getElementById('Episode-label');
         const seasonLabel = document.getElementById('Season-label');
         const idInput = document.getElementById('id-input');
+        const savedShows = document.getElementById("savedShows");
+
 
         idInput.value = currentId;
+
+        function updateSavedShows() {
+            const progress = JSON.parse(localStorage.getItem("progress"))
+
+            savedShows.innerHTML = "";
+
+            for (const id in progress) {
+                const div = document.createElement("div");
+                div.className = "saved-show";
+
+                div.textContent =
+                    `${id} - S${progress[id].season}E${progress[id].episode}`;
+
+                div.addEventListener("click", function () {
+                    currentId = id;
+                    idInput.value = id;
+                    loadProgress(id);
+                    updatePlayer();
+                });
+
+                savedShows.appendChild(div);
+            }
+
+        }
 
         function saveProgress() {
             let progress = JSON.parse(localStorage.getItem("progress")) || {};
@@ -152,6 +201,7 @@
 
             localStorage.setItem("progress", JSON.stringify(progress));
             localStorage.setItem("currentId", currentId);
+            updateSavedShows();
         }
 
         function loadProgress(id) {
