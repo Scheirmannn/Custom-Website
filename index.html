@@ -95,7 +95,7 @@
             flex-direction: column;
             gap: 8px;
 
-            max-height: 140px;
+            max-height: 141px;
             overflow-y: auto;
         }
 
@@ -230,7 +230,7 @@
         }
 
         function updatePlayer() {
-            player.src = `https://vsembed.su/embed/tv?imdb=${currentId}&season=${currentSsIndex}&episode=${currentEpIndex}`;
+            player.src = `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?primarycolor=7ef7c4&secondarycolor=081210`;
 
             episodeLabel.textContent = `Episode: ${currentEpIndex}`;
             seasonLabel.textContent = `Season: ${currentSsIndex}`;
