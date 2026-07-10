@@ -158,10 +158,10 @@
 
     <script>
         const API_KEY = "804c1eeadd95968ad49ca00abad2b6ac";
-        let currentId = localStorage.getItem("currentId") || "tt0491738";
+        let currentId = localStorage.getItem("currentId") || "1100";
         let currentSsIndex = 1;
         let currentEpIndex = 1;
-        let currentName = ""
+        let currentName = localStorage.getItem("currentId")
 
         const player = document.getElementById('player');
         const episodeLabel = document.getElementById('Episode-label');
@@ -170,7 +170,7 @@
         const savedShows = document.getElementById("savedShows");
 
 
-        idInput.value = currentId;
+        idInput.value = currentName;
 
         function updateSavedShows() {
             const progress = JSON.parse(localStorage.getItem("progress"))
@@ -219,6 +219,7 @@
 
             localStorage.setItem("progress", JSON.stringify(progress));
             localStorage.setItem("currentId", currentId);
+            localStorage.setItem("currentName", currentName);
             updateSavedShows();
         }
 
