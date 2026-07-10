@@ -196,7 +196,7 @@
                 div.addEventListener("dblclick", function () {
                     let progress = JSON.parse(localStorage.getItem("progress")) || {};
 
-                    delete show;
+                    delete progress[id];
 
                     localStorage.setItem("progress", JSON.stringify(progress));
 
