@@ -161,7 +161,7 @@
         let currentId = localStorage.getItem("currentId") || "1100";
         let currentSsIndex = 1;
         let currentEpIndex = 1;
-        let currentName = localStorage.getItem("currentName")
+        let currentName = localStorage.getItem("currentName") || "How I Met Your Mother";
 
         const player = document.getElementById('player');
         const episodeLabel = document.getElementById('Episode-label');
@@ -267,6 +267,7 @@
 
                     currentName = show.name;
                     currentId = show.id.toString();
+                    idInput.value = currentName
                     loadProgress(currentId);
                     updatePlayer();
                 } else {
