@@ -121,7 +121,7 @@
 
             <div class="card">
                 <h3>Show ID</h3>
-                <input type="text" id="id-input" placeholder="Enter a Show ID">
+                <input type="text" id="id-input" placeholder="Enter a Show Name">
             </div>
 
             <div class="card">
@@ -157,9 +157,11 @@
     </div>
 
     <script>
-        let currentId = localStorage.getItem("currentId") || "tt0491738";
+        const API_KEY = "804c1eeadd95968ad49ca00abad2b6ac";
+        let currentId = localStorage.getItem("currentId") || "1100";
         let currentSsIndex = 1;
         let currentEpIndex = 1;
+        let currentName = localStorage.getItem("currentName") || "How I Met Your Mother";
 
         const player = document.getElementById('player');
         const episodeLabel = document.getElementById('Episode-label');
@@ -168,10 +170,10 @@
         const savedShows = document.getElementById("savedShows");
 
 
-        idInput.value = currentId;
+        idInput.value = currentName;
 
         function updateSavedShows() {
-            const progress = JSON.parse(localStorage.getItem("progress"))
+            const progress = JSON.parse(localStorage.getItem("progress")) || {};
 
             savedShows.innerHTML = "";
 
@@ -179,12 +181,15 @@
                 const div = document.createElement("div");
                 div.className = "saved-show";
 
+                const show = progress[id];
+
                 div.textContent =
-                    `${id} - S${progress[id].season}E${progress[id].episode}`;
+                    `${show.name || id} - S${show.season}E${show.episode}`;
 
                 div.addEventListener("click", function () {
                     currentId = id;
-                    idInput.value = id;
+                    currentName = show.name
+                    idInput.value = show.name;
                     loadProgress(id);
                     updatePlayer();
                 });
@@ -208,12 +213,14 @@
             let progress = JSON.parse(localStorage.getItem("progress")) || {};
 
             progress[currentId] = {
+                name: currentName,
                 season: currentSsIndex,
                 episode: currentEpIndex
             };
 
             localStorage.setItem("progress", JSON.stringify(progress));
             localStorage.setItem("currentId", currentId);
+            localStorage.setItem("currentName", currentName);
             updateSavedShows();
         }
 
@@ -241,15 +248,33 @@
         loadProgress(currentId);
         updatePlayer();
 
-        idInput.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                const id = this.value.trim();
+        idInput.addEventListener("keydown", async function (event) {
+            if (event.key !== "Enter") return;
 
-                if (id !== "") {
-                    currentId = id;
+            const query = this.value.trim();
+
+            if (!query) return;
+
+            try {
+                const response = await fetch(
+                    `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
+                );
+
+                const data = await response.json();
+
+                if (data.results.length > 0) {
+                    const show = data.results[0];
+
+                    currentName = show.name;
+                    currentId = show.id.toString();
+                    idInput.value = currentName
                     loadProgress(currentId);
                     updatePlayer();
+                } else {
+                    console.log("No show found.");
                 }
+            } catch (error) {
+                console.error(error);
             }
         });
 
