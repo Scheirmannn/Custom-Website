@@ -121,7 +121,7 @@
 
             <div class="card">
                 <h3>Show ID</h3>
-                <input type="text" id="id-input" placeholder="Enter a Show ID">
+                <input type="text" id="id-input" placeholder="Enter a Show Name">
             </div>
 
             <div class="card">
@@ -161,6 +161,7 @@
         let currentId = localStorage.getItem("currentId") || "tt0491738";
         let currentSsIndex = 1;
         let currentEpIndex = 1;
+        let currentName = ""
 
         const player = document.getElementById('player');
         const episodeLabel = document.getElementById('Episode-label');
@@ -180,8 +181,10 @@
                 const div = document.createElement("div");
                 div.className = "saved-show";
 
+                const show = progress[id];
+
                 div.textContent =
-                    `${id} - S${progress[id].season}E${progress[id].episode}`;
+                    `${show.name || id} - S${show.season}E${show.episode}`;
 
                 div.addEventListener("click", function () {
                     currentId = id;
@@ -193,7 +196,7 @@
                 div.addEventListener("dblclick", function () {
                     let progress = JSON.parse(localStorage.getItem("progress")) || {};
 
-                    delete progress[id];
+                    delete show;
 
                     localStorage.setItem("progress", JSON.stringify(progress));
 
@@ -209,6 +212,7 @@
             let progress = JSON.parse(localStorage.getItem("progress")) || {};
 
             progress[currentId] = {
+                name: currentName,
                 season: currentSsIndex,
                 episode: currentEpIndex
             };
@@ -259,6 +263,7 @@
                 if (data.results.length > 0) {
                     const show = data.results[0];
 
+                    currentName = show.name;
                     currentId = show.id.toString();
                     loadProgress(currentId);
                     updatePlayer();
