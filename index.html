@@ -245,7 +245,7 @@
         idInput.addEventListener("keydown", function (event) {
             const id = 1;
             async () => {
-                const query = document.getElementById("name-input").value.trim();
+                const query = this.value.trim();
 
                 if (!query) return;
 
