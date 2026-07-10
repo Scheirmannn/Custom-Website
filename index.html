@@ -188,7 +188,7 @@
 
                 div.addEventListener("click", function () {
                     currentId = id;
-                    idInput.value = id;
+                    idInput.value = show.name;
                     loadProgress(id);
                     updatePlayer();
                 });
@@ -264,7 +264,7 @@
                     const show = data.results[0];
 
                     currentName = show.name;
-                    currentId = show.id.toString();
+                    currentId = show.name;
                     loadProgress(currentId);
                     updatePlayer();
                 } else {
