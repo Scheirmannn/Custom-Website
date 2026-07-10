@@ -157,6 +157,7 @@
     </div>
 
     <script>
+        const API_KEY = "804c1eeadd95968ad49ca00abad2b6ac";
         let currentId = localStorage.getItem("currentId") || "tt0491738";
         let currentSsIndex = 1;
         let currentEpIndex = 1;
@@ -242,13 +243,30 @@
         updatePlayer();
 
         idInput.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                const id = this.value.trim();
+            async () => {
+                const query = document.getElementById("name-input").value.trim();
 
-                if (id !== "") {
-                    currentId = id;
-                    loadProgress(currentId);
-                    updatePlayer();
+                if (!query) return;
+
+                try {
+                    const response = await fetch(
+                        `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
+                    );
+
+                    const data = await response.json();
+
+                    if (data.results.length > 0) {
+                        const show = data.results[0];
+
+                        id = show.id;
+                        currentId = id;
+                        loadProgress(currentId);
+                        updatePlayer();
+                    } else {
+                        console.error(error);
+                    }
+                } catch (error) {
+                    console.error(error);
                 }
             }
         });
