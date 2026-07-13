@@ -173,7 +173,7 @@
         idInput.value = currentName;
 
         function updateSavedShows() {
-            const progress = JSON.parse(localStorage.getItem("progress"))
+            const progress = JSON.parse(localStorage.getItem("progress")) || {};
 
             savedShows.innerHTML = "";
 
@@ -200,7 +200,7 @@
                     delete progress[id];
 
                     localStorage.setItem("progress", JSON.stringify(progress));
-
+                    loadProgress(1);
                     updateSavedShows();
                 });
 
@@ -237,7 +237,7 @@
         }
 
         function updatePlayer() {
-            player.src = `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?server=dark`;
+            player.src = `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?server=fifa`
 
             episodeLabel.textContent = `Episode: ${currentEpIndex}`;
             seasonLabel.textContent = `Season: ${currentSsIndex}`;
