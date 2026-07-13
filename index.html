@@ -199,10 +199,24 @@
 
                     delete progress[id];
 
+                    if (id === currentId) {
+                        currentId = "";
+                        currentName = "";
+                        currentSsIndex = 1;
+                        currentEpIndex = 1;
+
+                        idInput.value = "";
+
+                        player.src = "";
+                        episodeLabel.textContent = "Episode: 1";
+                        seasonLabel.textContent = "Season: 1";
+
+                        localStorage.removeItem("currentId");
+                        localStorage.removeItem("currentName");
+                    }
+
                     localStorage.setItem("progress", JSON.stringify(progress));
                     updateSavedShows();
-                    loadProgress(0);
-                    updatePlayer();
                 });
 
                 savedShows.appendChild(div);
