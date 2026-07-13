@@ -200,9 +200,9 @@
                     delete progress[id];
 
                     localStorage.setItem("progress", JSON.stringify(progress));
+                    updateSavedShows();
                     loadProgress(0);
                     updatePlayer();
-                    updateSavedShows();
                 });
 
                 savedShows.appendChild(div);
