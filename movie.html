@@ -177,8 +177,8 @@
 
     <script>
         const API_KEY = "804c1eeadd95968ad49ca00abad2b6ac";
-        let currentId = localStorage.getItem("currentId") || "550";
-        let currentName = localStorage.getItem("currentName") || "Fight Club";
+        let currentId = localStorage.getItem("movieId") || "550";
+        let currentName = localStorage.getItem("movieName") || "Fight Club";
 
         const player = document.getElementById('player');
         const idInput = document.getElementById('id-input');
@@ -242,8 +242,8 @@
                         player.src = "";
                         idInput.value = "";
 
-                        localStorage.removeItem("currentId");
-                        localStorage.removeItem("currentName");
+                        localStorage.removeItem("movieId");
+                        localStorage.removeItem("movieName");
                     }
                     updateSavedMovies();
                 });
@@ -259,8 +259,8 @@
             };
 
             localStorage.setItem("movies", JSON.stringify(movies));
-            localStorage.setItem("currentId", currentId);
-            localStorage.setItem("currentName", currentName);
+            localStorage.setItem("movieId", currentId);
+            localStorage.setItem("movieName", currentName);
             updateSavedMovies();
         }
 
