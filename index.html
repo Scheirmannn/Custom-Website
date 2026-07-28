@@ -63,9 +63,10 @@
         }
 
         .player-wrap {
+            width: 100%;
             flex: 1;
+            aspect-ratio: 16 / 9;
             max-height: 700px;
-            aspect-ratio: 16/9;
             position: relative;
             background: #000;
             border-radius: 12px;
@@ -169,6 +170,13 @@
         const idInput = document.getElementById('id-input');
         const savedShows = document.getElementById("savedShows");
 
+        const tvServers = [`https://peachify.pro/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`,
+        `https://vidup.to/tv//${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`,
+        `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`,
+        `https://vidfast.vc/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`,
+        `https://vidnest.fun/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`];
+
+        let currentServer = 2;
 
         idInput.value = currentName;
 
@@ -252,11 +260,10 @@
         }
 
         function updatePlayer() {
-            player.src = `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?server=fifa`
-
+            player.src = tvServers[currentServer];
             episodeLabel.textContent = `Episode: ${currentEpIndex}`;
             seasonLabel.textContent = `Season: ${currentSsIndex}`;
-
+            //god
             saveProgress();
         }
 
