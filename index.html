@@ -56,6 +56,14 @@
             cursor: pointer;
         }
 
+        .nav-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
         input {
             width: 100%;
             box-sizing: border-box;
@@ -121,6 +129,11 @@
         <div class="sidebar">
 
             <div class="card">
+                <h3>Swap Button</h3>
+                <button class="nav-button" onclick="location.href='movie.html'">Movies</button>
+            </div>
+
+            <div class="card">
                 <h3>Show ID</h3>
                 <input type="text" id="id-input" placeholder="Enter a Show Name">
             </div>
@@ -170,6 +183,31 @@
         const idInput = document.getElementById('id-input');
         const savedShows = document.getElementById("savedShows");
 
+<<<<<<< HEAD
+=======
+        function tvServers() {
+            return [
+                `https://peachify.pro/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`
+                , `https://vidup.to/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`
+                , `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`
+                , `https://vidfast.vc/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`
+                , `https://vidnest.fun/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`
+            ];
+        }
+
+        let currentServer = 2;
+
+        const playerButtons = document.querySelector(".player-buttons");
+
+        tvServers().forEach((_, index) => {
+            const button = document.createElement("button");
+            button.className = "server-btn";
+            button.dataset.server = index;
+            button.textContent = `Server ${index + 1}`;
+
+            playerButtons.appendChild(button);
+        });
+>>>>>>> 356b03b... crazy progress
 
         idInput.value = currentName;
 
