@@ -281,6 +281,29 @@
             if (!query) return;
 
             try {
+                // First check if the input is a TMDB ID
+                if (/^\d+$/.test(query)) {
+                    const response = await fetch(
+                        `https://api.themoviedb.org/3/movie/${query}?api_key=${API_KEY}`
+                    );
+
+                    if (response.ok) {
+                        const movie = await response.json();
+
+                        currentId = movie.id.toString();
+                        currentName = movie.title;
+
+                        idInput.value = currentName;
+
+                        updatePlayer();
+                        return;
+                    }
+
+                    console.log("Invalid TMDB movie ID.");
+                    return;
+                }
+
+                // If it isn't an ID, search by movie name
                 const response = await fetch(
                     `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
                 );
@@ -292,11 +315,14 @@
 
                     currentName = movie.title;
                     currentId = movie.id.toString();
-                    idInput.value = currentName
+
+                    idInput.value = currentName;
+
                     updatePlayer();
                 } else {
                     console.log("No movie found.");
                 }
+
             } catch (error) {
                 console.error(error);
             }
