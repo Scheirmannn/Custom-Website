@@ -193,7 +193,6 @@
     </div>
 
     <script>
-        const API_KEY = "804c1eeadd95968ad49ca00abad2b6ac";
         let currentId = localStorage.getItem("currentId") || "1100";
         let currentSsIndex = 1;
         let currentEpIndex = 1;
@@ -327,7 +326,7 @@
             const query = this.value.trim();
             if (!query) return;
             try {
-                const response = await fetch(`/api/tmdb?q=${encodeURIComponent(query)}`);
+                const response = await fetch(`/api/tmdbTvT?q=${encodeURIComponent(query)}`);
 
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
