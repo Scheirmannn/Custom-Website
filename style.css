@@ -132,42 +132,27 @@ input {
 
 /* Small circular page switcher */
 
-.page-switcher {
-    position: fixed;
-    top: 15px;
-    right: 15px;
+/* Top-right page switcher */
+.top-buttons {
+    position: absolute;
+    top: 0;
+    right: 55px;
     display: flex;
-    gap: 8px;
-    z-index: 1000;
+    gap: 22px;
 }
 
-.page-switcher a {
-    width: 42px;
-    height: 42px;
+.top-button {
+    width: 90px;
+    height: 90px;
+    border: none;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    text-decoration: none;
-    background: #fff;
-    color: #333;
-
-    font-size: 12px;
-    font-weight: 600;
-
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
-    transition: 0.2s;
+    background: #d0d0d0;
+    font-size: 21px;
+    cursor: pointer;
 }
 
-.page-switcher a:hover {
-    transform: scale(1.08);
-    background: #eee;
-}
-
-.page-switcher a.active {
-    background: #333;
-    color: #fff;
+.top-button:hover {
+    background: #bdbdbd;
 }
 
 
