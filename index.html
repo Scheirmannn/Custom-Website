@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Website</title>
+
+    <title>Search</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -12,15 +14,30 @@
 
         body {
             margin: 0;
-            background: white;
+            background: #f2f3f5;
             font-family: Arial, Helvetica, sans-serif;
+            color: #111;
         }
 
-        /* Top-right M / TV buttons */
+        /* Main page */
+        .page {
+            width: 95%;
+            min-height: 890px;
+            margin: 18px auto;
+            background: #ffffff;
+            position: relative;
+            padding-top: 190px;
+        }
+
+        /* =========================
+           Navigation
+        ========================= */
+
         .top-buttons {
             position: absolute;
             top: 0;
             right: 55px;
+
             display: flex;
             gap: 22px;
         }
@@ -28,85 +45,145 @@
         .top-button {
             width: 90px;
             height: 90px;
+
             border: none;
             border-radius: 50%;
+
             background: #d0d0d0;
+            color: #111;
+
             font-size: 21px;
+            font-weight: 400;
+
             cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
         }
 
         .top-button:hover {
             background: #bdbdbd;
+            transform: scale(1.04);
         }
 
-        /* Main content */
+        .top-button:active {
+            transform: scale(0.97);
+        }
+
+        /* =========================
+           Main Content
+        ========================= */
+
         .content {
             width: 58%;
+            max-width: 950px;
             margin: 0 auto;
         }
 
-        /* Title */
+        /* Website title */
         h1 {
-            margin: 0 0 8px 0;
+            margin: 0 0 22px 0;
+
             text-align: center;
+
             font-size: 76px;
             font-weight: 700;
+            line-height: 1;
         }
 
-        /* Movies / TV navigation */
-        .navigation {
-            display: flex;
-            width: 100%;
-            gap: 0;
-        }
+        /* =========================
+           Search
+        ========================= */
 
-        .navigation button {
-            width: 50%;
-            height: 45px;
-            border: none;
-            background: #cccccc;
-            font-size: 21px;
-            cursor: pointer;
-        }
-
-        .navigation button:first-child {
-            border-radius: 15px 15px 15px 15px;
-        }
-
-        .navigation button:last-child {
-            border-radius: 15px 15px 15px 15px;
-        }
-
-        .navigation button:hover {
-            background: #bdbdbd;
-        }
-
-        /* Search box */
         .search-container {
-            margin-top: 4px;
             width: 100%;
             height: 135px;
+
+            padding: 20px;
+
             background: #d5d5d5;
             border-radius: 15px;
+
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .search-container input {
-            width: 80%;
-            height: 55px;
+            width: 100%;
+            height: 70px;
+
+            padding: 0 25px;
+
             border: none;
+            border-radius: 15px;
+
             outline: none;
-            background: transparent;
+
+            background: #eeeeee;
+            color: #111;
+
             text-align: center;
+
             font-size: 21px;
-            color: white;
+
+            transition:
+                background 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
         .search-container input::placeholder {
-            color: white;
+            color: #777;
             opacity: 1;
+        }
+
+        .search-container input:focus {
+            background: #ffffff;
+            box-shadow: 0 0 0 3px #c0c0c0;
+        }
+
+        /* =========================
+           Smaller Screens
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            .page {
+                width: 100%;
+                min-height: 100vh;
+                margin: 0;
+                padding-top: 150px;
+            }
+
+            .content {
+                width: 85%;
+            }
+
+            h1 {
+                font-size: 48px;
+            }
+
+            .top-buttons {
+                right: 20px;
+                gap: 12px;
+            }
+
+            .top-button {
+                width: 65px;
+                height: 65px;
+                font-size: 17px;
+            }
+
+            .search-container {
+                height: 115px;
+                padding: 15px;
+            }
+
+            .search-container input {
+                height: 65px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -115,6 +192,7 @@
 
     <div class="page">
 
+        <!-- Navigation -->
         <div class="top-buttons">
 
             <button class="top-button" onclick="location.href='movie.html'">
@@ -127,19 +205,21 @@
 
         </div>
 
+
+        <!-- Main Content -->
         <div class="content">
 
-            <h1>Didly Website</h1>
+            <h1>Diddy Website</h1>
 
             <div class="search-container">
-                <input type="text" placeholder="Searchhh" id="search">
+
+                <input type="text" id="search" placeholder="Search">
+
             </div>
 
         </div>
 
     </div>
-
-    <script src="scripts/movie.js"></script>
 
 </body>
 
