@@ -1,4 +1,4 @@
-export default async function tvSearch(req, res) {
+export default async function handler(req, res) {
     const API_KEY = process.env.TMDB_KEY;
     const query = req.query.q;
 
