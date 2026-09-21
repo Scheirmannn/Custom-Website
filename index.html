@@ -207,11 +207,12 @@
 
         function tvServers() {
             return [
-                `https://peachify.pro/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`
-                , `https://vidup.to/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`
-                , `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`
-                , `https://vidfast.vc/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`
-                , `https://vidnest.fun/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`
+                `https://peachify.pro/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`,
+                `https://vidup.to/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`,
+                `https://vidsrc.sh/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`,
+                `https://player.vidlove.cc/embed/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`,
+                `https://vidfast.vc/tv/${currentId}/${currentSsIndex}/${currentEpIndex}?nextButton=false&autoNext=false`,
+                `https://vidnest.fun/tv/${currentId}/${currentSsIndex}/${currentEpIndex}`,
             ];
         }
 
@@ -327,26 +328,19 @@
 
             if (!query) return;
 
-            try {
-                const response = await fetch(
-                    `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
-                );
 
-                const data = await response.json();
+            const data = await tvSearch().JSON
 
-                if (data.results.length > 0) {
-                    const show = data.results[0];
+            if (data.results.length > 0) {
+                const show = data.results[0];
 
-                    currentName = show.name;
-                    currentId = show.id.toString();
-                    idInput.value = currentName
-                    loadProgress(currentId);
-                    updatePlayer();
-                } else {
-                    console.log("No show found.");
-                }
-            } catch (error) {
-                console.error(error);
+                currentName = show.name;
+                currentId = show.id.toString();
+                idInput.value = currentName
+                loadProgress(currentId);
+                updatePlayer();
+            } else {
+                console.log("No show found.");
             }
         });
 
