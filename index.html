@@ -327,20 +327,31 @@
             const query = this.value.trim();
 
             if (!query) return;
+            try {
+                const response = await fetch(`/api/tmdb?path=/search/tv&q=${encodeURIComponent(query)}`);
 
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-            const data = await tvSearch().JSON
+                const data = await response().JSON
 
-            if (data.results.length > 0) {
-                const show = data.results[0];
+                if (data.results.length > 0) {
+                    const show = data.results[0];
 
-                currentName = show.name;
-                currentId = show.id.toString();
-                idInput.value = currentName
-                loadProgress(currentId);
-                updatePlayer();
-            } else {
-                console.log("No show found.");
+                    currentName = show.name;
+                    currentId = show.id.toString();
+                    idInput.value = currentName
+                    loadProgress(currentId);
+
+                    updatePlayer();
+                } else {
+                    console.log("No show found.");
+                }
+
+            } catch (error) {
+                console.error("Error searching for show:", error);
+                alert("Something went wrong while searching.");
             }
         });
 
