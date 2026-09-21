@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Search</title>
-
+    <title>Movie Website</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -15,183 +13,169 @@
             padding: 30px;
         }
 
-        .page {
+        .layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
             max-width: 1400px;
             margin: auto;
-            position: relative;
-            min-height: calc(100vh - 60px);
         }
 
-        /* =========================
-           Navigation
-        ========================= */
-
-        .top-buttons {
-            position: absolute;
-            top: 0;
-            right: 0;
-
+        .sidebar {
+            width: 280px;
             display: flex;
-            gap: 12px;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .top-button {
-            width: 70px;
-            height: 70px;
-
-            padding: 0;
-            border: none;
-            border-radius: 50%;
-
-            background: #fff;
-
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
-
-            font-size: 18px;
-            cursor: pointer;
-
-            transition: background .2s, transform .2s;
-        }
-
-        .top-button:hover {
-            background: #eee;
-            transform: translateY(-2px);
-        }
-
-        /* =========================
-           Main Content
-        ========================= */
-
-        .content {
-            width: 60%;
-            max-width: 900px;
-
-            margin: auto;
-            padding-top: 180px;
-        }
-
-        .title-card {
+        .card {
             background: #fff;
             border-radius: 12px;
-            padding: 25px;
-
+            padding: 16px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
-
-            text-align: center;
         }
 
-        .title-card h1 {
-            margin: 0;
-            font-size: 56px;
-            font-weight: 600;
-        }
-
-        /* =========================
-           Search
-        ========================= */
-
-        .search-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
-
-            margin-top: 20px;
-        }
-
-        .search-card h3 {
+        .card h3 {
             margin-top: 0;
             margin-bottom: 16px;
-
             font-size: 18px;
             font-weight: 500;
             text-align: center;
         }
 
-        .search-card input {
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .nav-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        input {
             width: 100%;
             box-sizing: border-box;
-
-            padding: 14px;
-
-            border: 1px solid #ddd;
-            border-radius: 8px;
-
-            font-family: inherit;
-            font-size: 16px;
-
-            outline: none;
+            padding: 10px;
         }
 
-        .search-card input:focus {
-            border-color: #aaa;
+        .player-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        /* =========================
-           Mobile
-        ========================= */
+        .player-wrap {
+            width: 100%;
+            flex: 1;
+            aspect-ratio: 16 / 9;
+            max-height: 700px;
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
 
-        @media(max-width: 900px) {
+        .player-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
 
-            body {
-                padding: 20px;
+        .player-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .player-buttons button {
+            padding: 10px 18px;
+        }
+
+        @media(max-width:900px) {
+            .layout {
+                flex-direction: column;
             }
 
-            .content {
+            .sidebar {
                 width: 100%;
-                padding-top: 130px;
             }
+        }
 
-            .title-card h1 {
-                font-size: 42px;
-            }
+        #savedShows {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
 
-            .top-button {
-                width: 60px;
-                height: 60px;
-            }
+            max-height: 141px;
+            overflow-y: auto;
+        }
+
+        .saved-show {
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .saved-show:hover {
+            background: #ddd;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="page">
+    <div class="layout">
 
-        <!-- Navigation -->
-        <div class="top-buttons">
+        <div class="sidebar">
 
-            <button class="top-button" onclick="location.href='movie.html'">
-                M
-            </button>
-
-            <button class="top-button" onclick="location.href='tv.html'">
-                Tv
-            </button>
-
-        </div>
-
-
-        <!-- Main Content -->
-        <div class="content">
-
-            <div class="title-card">
-                <h1>Diddy Website</h1>
+            <div class="card">
+                <h3>Swap Button</h3>
+                <button class="nav-button" onclick="location.href='index.html'">Shows</button>
             </div>
 
+            <div class="card">
+                <h3>Movie ID</h3>
+                <input type="text" id="id-input" placeholder="Enter a Movie Name">
+            </div>
 
-            <div class="search-card">
-
-                <h3>Search</h3>
-
-                <input type="text" id="search" placeholder="Enter a Movie or Show">
-
+            <div class="card">
+                <h3>Saved Movies</h3>
+                <div id="savedShows"></div>
             </div>
 
         </div>
 
+        <div class="player-section">
+
+            <div class="player-wrap">
+                <iframe id="player" src="https://vsembed.su/embed/tv?imdb=tt0491738&season=1&episode=1"
+                    allowfullscreen></iframe>
+            </div>
+
+            <div class="player-buttons"></div>
+
+        </div>
     </div>
+
+    <script src="scripts/movie.js"></script>
 
 </body>
 
