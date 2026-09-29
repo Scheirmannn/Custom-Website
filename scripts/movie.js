@@ -10,6 +10,7 @@ function movieServers() {
     return [
         `https://peachify.pro/embed/movie/${currentId}`,
         `https://vidup.to/movie/${currentId}?nextButton=false&autoNext=false`,
+        `https://vidsrc.sh/embed/movie/${currentId}`,
         `https://player.vidlove.cc/embed/movie/${currentId}`,
         `https://vidfast.vc/movie/${currentId}?nextButton=false&autoNext=false`,
         `https://vidnest.fun/movie/${currentId}`
